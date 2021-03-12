@@ -25,13 +25,14 @@ public class Client {
             Scanner sc = new Scanner(System.in);
             String buf;
             int number;
+
             String lastMessageID = "0";
-            Message clientMessage = new Message();
+
 
             AutoUpdate autoUpdate = new AutoUpdate();
             while (true) {
                 //System.out.println("_________" + NewClientMessage.message);
-
+                Message clientMessage = new Message();
                 if (NewClientMessage.message.equals("0")) {
 
                     clientMessage.setCommand("check");
@@ -40,22 +41,27 @@ public class Client {
                     clientMessage = (Message) cois.readObject();
                     if (!clientMessage.getBuf().equals("old")){
                         lastMessageID = clientMessage.getBuf();
-                        ArrayList<String> messages = clientMessage.getMessages();
+                        //ArrayList<String> messages = clientMessage.getMessages();
+                        System.out.println("Получено " + clientMessage.getCommand());
+                        String [] mes = clientMessage.getCommand().split("%");
+
+
+
                         System.out.println("------");
-                        for (int i=0; i<Integer.parseInt(lastMessageID); i++){
-                            System.out.println(messages.get(i));
+
+                        for (String str : mes){
+                            System.out.println(str);
                             System.out.println("------");
                         }
-/*                        for (String str : clientMessage.getMessages()){
-                            System.out.println(str);
-                        }*/
                     }
                 } else if (!NewClientMessage.message.equals( "/end")) {
                     clientMessage.setCommand("new");
                     clientMessage.setBuf(NewClientMessage.message);
-                    System.out.println("Отправка" + clientMessage.getCommand() + " " + clientMessage.getBuf());
+                    System.out.println("Отправка " + clientMessage.getCommand() + " " + clientMessage.getBuf());
                     coos.writeObject(clientMessage);
                     clientMessage = (Message) cois.readObject();
+
+
                 } else break;
 
 

@@ -7,41 +7,7 @@ import java.util.Calendar;
 
 public class ClientThread extends Thread implements Serializable {
 
-   /* private User user = new User();
-    private UserDB userDB = new UserDB();
-    private ArrayList<User> listUser = new ArrayList<>();
 
-    private Admin admin = new Admin();
-    private AdminDB adminDB = new AdminDB();
-    private ArrayList<Admin> listAdmin = new ArrayList<>();
-
-    private ServiceContract service = new ServiceContract();
-    private ServiceContractDB serviceDB = new ServiceContractDB();
-    private ArrayList<ServiceContract> listService = new ArrayList<>();
-
-    private ContractSale sale = new ContractSale();
-    private ContractSaleDB saleDB = new ContractSaleDB();
-    private ArrayList<ContractSale> listSale = new ArrayList<>();
-
-    private EmploymentContract employment = new EmploymentContract();
-    private EmploymentContractDB employmentDB = new EmploymentContractDB();
-    private ArrayList<EmploymentContract> listEmployment = new ArrayList<>();
-
-    private LicensedContract licensed = new LicensedContract();
-    private LicensedContractDB licensedDB = new LicensedContractDB();
-    private ArrayList<LicensedContract> listLicensed = new ArrayList<>();
-
-    private Company company = new Company();
-    private CompanyDB companyDB = new CompanyDB();
-    private ArrayList<Company> listCompany = new ArrayList<>();
-
-    private Client client = new Client();
-    private ClientDB clientDB = new ClientDB();
-    private ArrayList<Client> listClient = new ArrayList<>();
-
-    private Contract contract = new Contract();
-    private ContractDB contractDB = new ContractDB();
-    private ArrayList<Contract> listContract = new ArrayList<>();*/
 
     private String ch;
     private String string;
@@ -78,13 +44,26 @@ public class ClientThread extends Thread implements Serializable {
                         if (Integer.parseInt(message.getBuf()) != Chat.getSize()) {
                             message.setBuf(String.valueOf(Chat.getSize()));
                             message.setMessages(Chat.history);
-                            System.out.println("Отправлено " + Chat.getSize());
-                            outputStream.writeObject(message);
-
-                            for (String str : Chat.history){
+                            buf="";
+                            for (int i = 0; i<Chat.getSize();i++){
+                                buf+=Chat.history.get(i);
+                                buf+="%";
+                                System.out.println("Пытаюсь добавить" + Chat.history.get(i));
+                            }
+/*                            for (int i = Integer.parseInt(message.getBuf()); i<Chat.getSize();i++){
+                                buf+=Chat.history.get(i);
+                                buf+="%";
+                                System.out.println("Пытаюсь добавить" + Chat.history.get(i));
+                            }*/
+                            message.setCommand(buf);
+                            System.out.println("buf: " + buf + "getBuf: "+message.getBuf() +"getCommand: "+ message.getCommand() );
+                            for (String str : message.getMessages()){
                                 System.out.println(str);
                                 System.out.println("-------");
                             }
+                            outputStream.writeObject(message);
+
+
 
                         } else {
                             message.setBuf("old");
@@ -96,8 +75,8 @@ public class ClientThread extends Thread implements Serializable {
 
                     case "new": {
                         Chat.history.add(message.getBuf());
-                        outputStream.writeObject(new Message(Chat.history));
-
+                        //outputStream.writeObject(new Message(Chat.history));
+                        outputStream.writeObject(message);
                         break;
                     }
 
