@@ -8,12 +8,11 @@ import java.util.Calendar;
 public class ClientThread extends Thread implements Serializable {
 
 
-
+    public static int numOfUsers = 0;
     private String ch;
     private String string;
     private int count;
     private Socket socket;
-    public static int numOfUsers = 0;
     private int lastId = 0;
 
 
@@ -36,18 +35,19 @@ public class ClientThread extends Thread implements Serializable {
                 message = (Message) inputStream.readObject();
                 ch = message.getCommand();
                 //if (!message.getCommand().equals("check")) {
-                    System.out.println("Получено: " + message.getCommand() + " " + message.getBuf());
+                //System.out.println("Получено: " + message.getCommand() + " " + message.getBuf());
                 //}
                 switch (ch) {
 
-                    case "check":{
+                    case "check": {
                         if (Integer.parseInt(message.getBuf()) != Chat.getSize()) {
                             message.setBuf(String.valueOf(Chat.getSize()));
                             message.setMessages(Chat.history);
-                            buf="";
-                            for (int i = 0; i<Chat.getSize();i++){
-                                buf+=Chat.history.get(i);
-                                buf+="%";
+                            buf = "";
+                            for (int i = 0; i < Chat.getSize(); i++) {
+                                i = Integer.parseInt(message.getBuf())-1;
+                                buf += Chat.history.get(i);
+                                buf += "%";
                                 System.out.println("Пытаюсь добавить" + Chat.history.get(i));
                             }
 /*                            for (int i = Integer.parseInt(message.getBuf()); i<Chat.getSize();i++){
@@ -56,13 +56,12 @@ public class ClientThread extends Thread implements Serializable {
                                 System.out.println("Пытаюсь добавить" + Chat.history.get(i));
                             }*/
                             message.setCommand(buf);
-                            System.out.println("buf: " + buf + "getBuf: "+message.getBuf() +"getCommand: "+ message.getCommand() );
-                            for (String str : message.getMessages()){
+                            //System.out.println("buf: " + buf + "getBuf: " + message.getBuf() + "getCommand: " + message.getCommand());
+                            for (String str : message.getMessages()) {
                                 System.out.println(str);
                                 System.out.println("-------");
                             }
                             outputStream.writeObject(message);
-
 
 
                         } else {

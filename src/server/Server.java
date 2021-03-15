@@ -18,7 +18,7 @@ public class Server {
 
 
             ServerSocket socketListener = new ServerSocket(8080);
-            System.out.println("("+ Calendar.getInstance().getTime()+")"+"Сервер запущен: IP-адрес =127.0.0.1, PORT=8080");
+            System.out.println("(" + Calendar.getInstance().getTime() + ")" + "Сервер запущен: IP-адрес =127.0.0.1, PORT=8080");
 
             while (true) {
                 Socket client = null;
@@ -38,7 +38,7 @@ public class Server {
             System.err.println("I/O exception");
             e.printStackTrace();
         }
-        System.out.println("("+ Calendar.getInstance().getTime()+")"+"Сервер остановлен");
+        System.out.println("(" + Calendar.getInstance().getTime() + ")" + "Сервер остановлен");
     }
 
 }

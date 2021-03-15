@@ -1,7 +1,6 @@
 package server;
 
 import java.io.Serializable;
-import java.net.Socket;
 import java.util.Calendar;
 
 public class TestThread extends Thread implements Serializable {

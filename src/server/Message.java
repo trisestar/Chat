@@ -3,7 +3,6 @@ package server;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Message implements Serializable {
 
@@ -15,9 +14,8 @@ public class Message implements Serializable {
     private ArrayList<String> time;
 
 
-
-
-    public  Message(){}
+    public Message() {
+    }
 
     public Message(ArrayList<String> messages) {
         this.messages = messages;

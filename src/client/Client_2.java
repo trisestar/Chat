@@ -5,8 +5,6 @@ import server.Message;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Client_2 {
@@ -24,7 +22,7 @@ public class Client_2 {
             ObjectInputStream cois = new ObjectInputStream(clientSocket.getInputStream());
             Scanner sc = new Scanner(System.in);
             String buf;
-            int number;
+            int int_buf;
 
             String lastMessageID = "0";
 
@@ -39,39 +37,37 @@ public class Client_2 {
                     clientMessage.setBuf(lastMessageID);
                     coos.writeObject(clientMessage);
                     clientMessage = (Message) cois.readObject();
-                    if (!clientMessage.getBuf().equals("old")){
+                    if (!clientMessage.getBuf().equals("old")) {
                         lastMessageID = clientMessage.getBuf();
                         //ArrayList<String> messages = clientMessage.getMessages();
-                        System.out.println("Получено " + clientMessage.getCommand());
-                        String [] mes = clientMessage.getCommand().split("%");
+                        //System.out.println("Получено " + clientMessage.getCommand());
+                        String[] mes = clientMessage.getCommand().split("%");
 
 
 
-                        System.out.println("------");
 
-                        for (String str : mes){
+                        for (String str : mes) {
                             System.out.println(str);
                             System.out.println("------");
                         }
                     }
-                } else if (!NewClientMessage.message.equals( "/end")) {
+                } else if (!NewClientMessage.message.equals("/end")) {
+                    int_buf=Integer.parseInt(lastMessageID);
+                    int_buf++;
+                    lastMessageID= String.valueOf(int_buf);
                     clientMessage.setCommand("new");
                     clientMessage.setBuf(NewClientMessage.message);
-                    System.out.println("Отправка " + clientMessage.getCommand() + " " + clientMessage.getBuf());
+                    //System.out.println("Отправка " + clientMessage.getCommand() + " " + clientMessage.getBuf());
                     coos.writeObject(clientMessage);
                     clientMessage = (Message) cois.readObject();
-
+                    System.out.println("------");
 
                 } else break;
 
 
-
-
-
-                NewClientMessage.message="0";
-                Thread.sleep(2000);
+                NewClientMessage.message = "0";
+                Thread.sleep(100);
             }
-
 
 
             sc.close();

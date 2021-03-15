@@ -7,7 +7,7 @@ public class Chat implements Serializable {
 
     public static ArrayList<String> history = new ArrayList<String>();
 
-    public static int getSize () {
+    public static int getSize() {
         return history.size();
     }
 
