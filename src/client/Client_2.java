@@ -42,10 +42,6 @@ public class Client_2 {
                         //ArrayList<String> messages = clientMessage.getMessages();
                         //System.out.println("Получено " + clientMessage.getCommand());
                         String[] mes = clientMessage.getCommand().split("%");
-
-
-
-
                         for (String str : mes) {
                             System.out.println(str);
                             System.out.println("------");
@@ -66,7 +62,7 @@ public class Client_2 {
 
 
                 NewClientMessage.message = "0";
-                Thread.sleep(100);
+                Thread.sleep(50);
             }
 
 

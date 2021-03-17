@@ -1,7 +1,7 @@
 package server;
 
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Message implements Serializable {
@@ -68,4 +68,6 @@ public class Message implements Serializable {
     public void setTime(ArrayList<String> time) {
         this.time = time;
     }
+
+
 }
