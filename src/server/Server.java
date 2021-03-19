@@ -14,9 +14,6 @@ public class Server {
     public static void main(String[] args) {
         try {
 
-            //new TestThread();
-
-
             ServerSocket socketListener = new ServerSocket(8080);
             System.out.println("(" + Calendar.getInstance().getTime() + ")" + "Сервер запущен: IP-адрес =127.0.0.1, PORT=8080");
 

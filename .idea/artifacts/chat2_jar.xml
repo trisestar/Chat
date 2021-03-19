@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/chat2_jar</output-path>
     <root id="archive" name="chat2.jar">
       <element id="module-output" name="chat2" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/postgresql-42.2.19.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

@@ -1,3 +1,4 @@
+/*
 import server.DbThread;
 
 import java.sql.*;
@@ -12,4 +13,4 @@ public class TestBD {
 
         //new DbThread();
     }
-}
+}*/

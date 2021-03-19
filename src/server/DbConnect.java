@@ -36,14 +36,26 @@ public class DbConnect {
         try {
 
             switch (command) {
-                case "add": {
+
+                case "newMessage":{
+                    PreparedStatement preparedStatement = connection.prepareStatement
+                            ("INSERT INTO messages(message, name, date, room_id) VALUES (?, ?, ?, ?)");
+                    preparedStatement.setString(1, info.split("&")[0]);
+                    preparedStatement.setString(2, info.split("&")[1]);
+                    preparedStatement.setString(3, info.split("&")[2]);
+                    preparedStatement.setInt(4, Integer.parseInt(info.split("&")[3]));
+                    preparedStatement.executeUpdate();
+                    return "success";
+                }
+
+                case "addUser": {
                     PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users VALUES (?,?)");
                     preparedStatement.setString(1, info.split("&")[0]);
                     preparedStatement.setString(2, info.split("&")[1]);
                     preparedStatement.executeUpdate();
                     return "success";
                 }
-                case "check": {
+                case "checkUser": {
                     PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE login=? and password=?");
                     preparedStatement.setString(1, info.split("&")[0]);
                     preparedStatement.setString(2, info.split("&")[1]);
@@ -53,19 +65,17 @@ public class DbConnect {
                         return "success";
                     } else return "error";
 
-/*                    if (resultSet.getString(1).equals(info.split("&")[0])){
-                        return "success";
-                    } else
-                        return "error";*/
 
                 }
                 case "getChat": {
+                    if (Chat.getSize()==0){
                     PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages WHERE room_id=? ");
                     preparedStatement.setInt(1, Integer.parseInt(info));
                     ResultSet resultSet = preparedStatement.executeQuery();
                     while (resultSet.next()) {
                         Chat.history.add(resultSet.getString(2));
                         Chat.users.add(resultSet.getString(3));
+                    }
                     }
                     return "success";
                 }

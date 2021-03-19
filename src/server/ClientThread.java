@@ -24,6 +24,7 @@ public class ClientThread extends Thread implements Serializable {
 
     public void run() {
         try {
+
             ServerInfo info = new ServerInfo();
             Message message;
             DbConnect dbConnect =new DbConnect();
@@ -41,6 +42,7 @@ public class ClientThread extends Thread implements Serializable {
 
                     case "check": {
                         if (Integer.parseInt(message.getBuf()) != Chat.getSize()) {
+                            System.out.println("Получено "+message.getCommand()+" "+message.getBuf()+" от "+ info.getUser() + " chatsize был "+Chat.getSize());
                             buf = "";
                             for (int i = Integer.parseInt(message.getBuf()); i < Chat.getSize(); i++) {
                                 buf += Chat.history.get(i);
@@ -59,15 +61,17 @@ public class ClientThread extends Thread implements Serializable {
 
                     case "new": {
                         Chat.history.add(message.getBuf());
+                        Chat.users.add(info.getUser());
+                        buf=message.getBuf()+"&"+info.getUser()+"&"+Calendar.getInstance().getTime()+"&"+info.getRoom_id();
+                        System.out.println(buf);
+                        dbConnect.query("newMessage", buf);
                         outputStream.writeObject(message);
                         break;
                     }
 
 
                     case "add user":{
-                        System.out.println("кейс добавления юзера "+message.getBuf());
-
-                        if (dbConnect.query("add", message.getBuf()).equals("success")){
+                        if (dbConnect.query("addUser", message.getBuf()).equals("success")){
                             message.setCommand("success");
                             info.setUser(message.getBuf().split("&")[0]);
                             outputStream.writeObject(message);
@@ -79,9 +83,7 @@ public class ClientThread extends Thread implements Serializable {
                     }
 
                     case "check user":{
-
-
-                        if (dbConnect.query("check", message.getBuf()).equals("success")){
+                        if (dbConnect.query("checkUser", message.getBuf()).equals("success")){
                             message.setCommand("success");
                             info.setUser(message.getBuf().split("&")[0]);
                             outputStream.writeObject(message);

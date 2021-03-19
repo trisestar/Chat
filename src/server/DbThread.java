@@ -1,3 +1,4 @@
+/*
 package server;
 
 import java.io.Serializable;
@@ -52,3 +53,4 @@ public class DbThread extends Thread implements Serializable {
 
 
 }
+*/
