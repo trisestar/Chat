@@ -10,7 +10,7 @@ public class DbThread extends Thread implements Serializable {
     static final String USER = "postgres";
     static final String PASS = "12379580";
 
-    public DbThread() {
+    public DbThread(int room_id) {
         this.start();
     }
 

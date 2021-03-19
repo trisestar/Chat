@@ -35,10 +35,8 @@ public class Client {
                         System.out.println("Введите логин");
                         sc.nextLine();
                         login=sc.nextLine();
-                        System.out.println("Вы ввели "+login);
                         System.out.println("Введите пароль");
                         password=sc.nextLine();
-                        System.out.println("Вы ввели "+password);
                         clientMessage.setCommand("check user");
                         clientMessage.setBuf(login+"&"+password);
                         coos.writeObject(clientMessage);
@@ -46,7 +44,7 @@ public class Client {
                         if (clientMessage.getCommand().equals("success")){
                             auth=true;
                         } else {
-                            System.out.println("Не верный логин или пароль");
+                            System.out.println("Неверный логин или пароль");
                         }
                         break;
                     }
@@ -54,10 +52,8 @@ public class Client {
                         System.out.println("Введите логин");
                         sc.nextLine();
                         login=sc.nextLine();
-                        System.out.println("Вы ввели "+login);
                         System.out.println("Введите пароль");
                         password=sc.nextLine();
-                        System.out.println("Вы ввели "+password);
                         clientMessage.setCommand("add user");
                         clientMessage.setBuf(login+"&"+password);
                         System.out.println("Отправляю "+ clientMessage.getBuf());
@@ -74,11 +70,29 @@ public class Client {
                 if (auth) break;
             }
 
-/*            while (true){
-                System.out.println("Введите номер комнаты");
-            }*/
+            while (true){
+                System.out.println("Введите номер комнаты (от 0 до 99999)");
+                int_buf=0;
+                int_buf = sc.nextInt();
+                sc.nextLine();
+                if (int_buf<0 || int_buf>99999){
+                    System.out.println("Неверный номер комнаты");
+                } else {
+                    ClientData.room_id=int_buf;
+                    clientMessage.setCommand("set room");
+                    clientMessage.setBuf(String.valueOf(int_buf));
+                    coos.writeObject(clientMessage);
+                    clientMessage = (Message) cois.readObject();
+                    break;
+                }
+            }
 
-            AutoUpdate autoUpdate = new AutoUpdate();
+            clientMessage.setCommand("get history");
+            coos.writeObject(clientMessage);
+            clientMessage = (Message) cois.readObject();
+
+            new AutoUpdate();
+
             while (true) {
                 //System.out.println("_________" + NewClientMessage.message);
 

@@ -10,6 +10,6 @@ public class TestBD {
 
     public static void main(String[] argv) {
 
-        new DbThread();
+        //new DbThread();
     }
 }

@@ -24,9 +24,9 @@ public class ClientThread extends Thread implements Serializable {
 
     public void run() {
         try {
-            String userName;
-            int room_id = 0;
+            ServerInfo info = new ServerInfo();
             Message message;
+            DbConnect dbConnect =new DbConnect();
             ObjectOutputStream outputStream;
             ObjectInputStream inputStream;
             inputStream = new ObjectInputStream(this.socket.getInputStream());
@@ -66,10 +66,10 @@ public class ClientThread extends Thread implements Serializable {
 
                     case "add user":{
                         System.out.println("кейс добавления юзера "+message.getBuf());
-                        DbConnect dbConnect =new DbConnect();
+
                         if (dbConnect.query("add", message.getBuf()).equals("success")){
                             message.setCommand("success");
-                            userName = message.getBuf().split("&")[0];
+                            info.setUser(message.getBuf().split("&")[0]);
                             outputStream.writeObject(message);
                         } else {
                             message.setCommand("error");
@@ -80,15 +80,29 @@ public class ClientThread extends Thread implements Serializable {
 
                     case "check user":{
 
-                        DbConnect dbConnect =new DbConnect();
+
                         if (dbConnect.query("check", message.getBuf()).equals("success")){
                             message.setCommand("success");
-                            userName = message.getBuf().split("&")[0];
+                            info.setUser(message.getBuf().split("&")[0]);
                             outputStream.writeObject(message);
                         } else {
                             message.setCommand("error");
                             outputStream.writeObject(message);
                         }
+                        break;
+                    }
+
+                    case "get history":{
+                        dbConnect.query("getChat", String.valueOf(info.getRoom_id()));
+                        message.setCommand("success");
+                        outputStream.writeObject(message);
+                        break;
+                    }
+
+                    case "set room":{
+                        info.setRoom_id(Integer.parseInt(message.getBuf()));
+                        message.setCommand("success");
+                        outputStream.writeObject(message);
                         break;
                     }
 
