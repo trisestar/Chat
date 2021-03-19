@@ -21,17 +21,68 @@ public class Client {
             ObjectOutputStream coos = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream cois = new ObjectInputStream(clientSocket.getInputStream());
             Scanner sc = new Scanner(System.in);
-            String buf;
+            String buf, login,password;
             int int_buf;
-
+            Message clientMessage = new Message();
             String lastMessageID = "0";
+            boolean auth=false;
 
+            while (true){
+                System.out.println("1-Вход\n2-Регистрация");
+                int_buf = sc.nextInt();
+                switch (int_buf){
+                    case 1:{
+                        System.out.println("Введите логин");
+                        sc.nextLine();
+                        login=sc.nextLine();
+                        System.out.println("Вы ввели "+login);
+                        System.out.println("Введите пароль");
+                        password=sc.nextLine();
+                        System.out.println("Вы ввели "+password);
+                        clientMessage.setCommand("check user");
+                        clientMessage.setBuf(login+"&"+password);
+                        coos.writeObject(clientMessage);
+                        clientMessage = (Message) cois.readObject();
+                        if (clientMessage.getCommand().equals("success")){
+                            auth=true;
+                        } else {
+                            System.out.println("Не верный логин или пароль");
+                        }
+                        break;
+                    }
+                    case 2:{
+                        System.out.println("Введите логин");
+                        sc.nextLine();
+                        login=sc.nextLine();
+                        System.out.println("Вы ввели "+login);
+                        System.out.println("Введите пароль");
+                        password=sc.nextLine();
+                        System.out.println("Вы ввели "+password);
+                        clientMessage.setCommand("add user");
+                        clientMessage.setBuf(login+"&"+password);
+                        System.out.println("Отправляю "+ clientMessage.getBuf());
+                        coos.writeObject(clientMessage);
+                        clientMessage = (Message) cois.readObject();
+                        if (clientMessage.getCommand().equals("success")){
+                            auth=true;
+                        } else {
+                            System.out.println("error");
+                        }
+                        break;
+                    }
+                }
+                if (auth) break;
+            }
+
+/*            while (true){
+                System.out.println("Введите номер комнаты");
+            }*/
 
             AutoUpdate autoUpdate = new AutoUpdate();
             while (true) {
                 //System.out.println("_________" + NewClientMessage.message);
-                Message clientMessage = new Message();
-                if (NewClientMessage.message.equals("0")) {
+
+                if (ClientData.message.equals("0")) {
 
                     clientMessage.setCommand("check");
                     clientMessage.setBuf(lastMessageID);
@@ -47,12 +98,12 @@ public class Client {
                             System.out.println("------");
                         }
                     }
-                } else if (!NewClientMessage.message.equals("/end")) {
+                } else if (!ClientData.message.equals("/end")) {
                     int_buf=Integer.parseInt(lastMessageID);
                     int_buf++;
                     lastMessageID= String.valueOf(int_buf);
                     clientMessage.setCommand("new");
-                    clientMessage.setBuf(NewClientMessage.message);
+                    clientMessage.setBuf(ClientData.message);
                     //System.out.println("Отправка " + clientMessage.getCommand() + " " + clientMessage.getBuf());
                     coos.writeObject(clientMessage);
                     clientMessage = (Message) cois.readObject();
@@ -61,7 +112,7 @@ public class Client {
                 } else break;
 
 
-                NewClientMessage.message = "0";
+                ClientData.message = "0";
                 Thread.sleep(50);
             }
 

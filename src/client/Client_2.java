@@ -31,7 +31,7 @@ public class Client_2 {
             while (true) {
                 //System.out.println("_________" + NewClientMessage.message);
                 Message clientMessage = new Message();
-                if (NewClientMessage.message.equals("0")) {
+                if (ClientData.message.equals("0")) {
 
                     clientMessage.setCommand("check");
                     clientMessage.setBuf(lastMessageID);
@@ -47,12 +47,12 @@ public class Client_2 {
                             System.out.println("------");
                         }
                     }
-                } else if (!NewClientMessage.message.equals("/end")) {
+                } else if (!ClientData.message.equals("/end")) {
                     int_buf=Integer.parseInt(lastMessageID);
                     int_buf++;
                     lastMessageID= String.valueOf(int_buf);
                     clientMessage.setCommand("new");
-                    clientMessage.setBuf(NewClientMessage.message);
+                    clientMessage.setBuf(ClientData.message);
                     //System.out.println("Отправка " + clientMessage.getCommand() + " " + clientMessage.getBuf());
                     coos.writeObject(clientMessage);
                     clientMessage = (Message) cois.readObject();
@@ -61,7 +61,7 @@ public class Client_2 {
                 } else break;
 
 
-                NewClientMessage.message = "0";
+                ClientData.message = "0";
                 Thread.sleep(50);
             }
 

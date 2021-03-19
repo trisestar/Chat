@@ -17,7 +17,7 @@ public class AutoUpdate extends Thread implements Serializable {
         String buf;
         while (true) {
 
-            NewClientMessage.message = sc.nextLine();
+            ClientData.message = sc.nextLine();
             //System.out.println("Введено " + NewClientMessage.message);
             // NewClientMessage.setMessage(sc.nextLine());
             // System.out.println("Введено " + NewClientMessage.getMessage());

@@ -9,6 +9,7 @@ public class ClientThread extends Thread implements Serializable {
 
 
     public static int numOfUsers = 0;
+
     private String ch;
     private String string;
     private int count;
@@ -23,8 +24,8 @@ public class ClientThread extends Thread implements Serializable {
 
     public void run() {
         try {
+            String userName;
             int room_id = 0;
-            new DbThread();
             Message message;
             ObjectOutputStream outputStream;
             ObjectInputStream inputStream;
@@ -32,30 +33,22 @@ public class ClientThread extends Thread implements Serializable {
             outputStream = new ObjectOutputStream(this.socket.getOutputStream());
             String buf = "";
             int int_buf;
-            while (true) {
 
+            while (true) {
                 message = (Message) inputStream.readObject();
                 ch = message.getCommand();
-                //if (!message.getCommand().equals("check")) {
-                //System.out.println("Получено: " + message.getCommand() + " " + message.getBuf());
-                //}
                 switch (ch) {
 
                     case "check": {
                         if (Integer.parseInt(message.getBuf()) != Chat.getSize()) {
-                            //System.out.println("Отправляю с " + message.getBuf() + " до " + Chat.getSize());
                             buf = "";
                             for (int i = Integer.parseInt(message.getBuf()); i < Chat.getSize(); i++) {
                                 buf += Chat.history.get(i);
                                 buf += "%";
-                                //System.out.println("Добавил " + i + " элемент");
                             }
                             message.setCommand(buf);
-                           // System.out.println("buf = " + buf);
-                            //System.out.println("Отправлено " + message.getCommand());
                             message.setBuf(String.valueOf(Chat.getSize()));
                             outputStream.writeObject(message);
-
 
                         } else {
                             message.setBuf("old");
@@ -66,28 +59,48 @@ public class ClientThread extends Thread implements Serializable {
 
                     case "new": {
                         Chat.history.add(message.getBuf());
-                        //outputStream.writeObject(new Message(Chat.history));
                         outputStream.writeObject(message);
                         break;
                     }
 
-                    case "reload": {
-                        outputStream.writeObject(new Message(Chat.history));
+
+                    case "add user":{
+                        System.out.println("кейс добавления юзера "+message.getBuf());
+                        DbConnect dbConnect =new DbConnect();
+                        if (dbConnect.query("add", message.getBuf()).equals("success")){
+                            message.setCommand("success");
+                            userName = message.getBuf().split("&")[0];
+                            outputStream.writeObject(message);
+                        } else {
+                            message.setCommand("error");
+                            outputStream.writeObject(message);
+                        }
                         break;
                     }
 
-                    default: {
-                        System.out.println("Error");
+                    case "check user":{
+
+                        DbConnect dbConnect =new DbConnect();
+                        if (dbConnect.query("check", message.getBuf()).equals("success")){
+                            message.setCommand("success");
+                            userName = message.getBuf().split("&")[0];
+                            outputStream.writeObject(message);
+                        } else {
+                            message.setCommand("error");
+                            outputStream.writeObject(message);
+                        }
                         break;
                     }
 
-
-
-                    case "Выход": {
+                    case "exit": {
                         socket.close();
                         outputStream.close();
                         inputStream.close();
 
+                        break;
+                    }
+                    default: {
+                        System.out.println("error");
                         break;
                     }
                 }
