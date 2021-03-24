@@ -37,7 +37,7 @@ public class DbConnect {
 
             switch (command) {
 
-                case "newMessage":{
+                case "newMessage": {
                     PreparedStatement preparedStatement = connection.prepareStatement
                             ("INSERT INTO messages(message, name, date, room_id) VALUES (?, ?, ?, ?)");
                     preparedStatement.setString(1, info.split("&")[0]);
@@ -61,23 +61,26 @@ public class DbConnect {
                     preparedStatement.setString(2, info.split("&")[1]);
                     ResultSet resultSet = preparedStatement.executeQuery();
 
-                    if (resultSet.next()){
+                    if (resultSet.next()) {
                         return "success";
-                    } else return "error";
+                    } else
+                        return "error";
 
 
                 }
                 case "getChat": {
-                    if (Chat.getSize()==0){
+                    String chat = new String();
                     PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages WHERE room_id=? ");
                     preparedStatement.setInt(1, Integer.parseInt(info));
                     ResultSet resultSet = preparedStatement.executeQuery();
+
                     while (resultSet.next()) {
-                        Chat.history.add(resultSet.getString(2));
-                        Chat.users.add(resultSet.getString(3));
+                        chat += resultSet.getString(2);
+                        chat += "#";
+                        chat += resultSet.getString(3);
+                        chat += "&";
                     }
-                    }
-                    return "success";
+                    return chat;
                 }
             }
 

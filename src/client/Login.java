@@ -7,18 +7,19 @@ public class Login {
     public Login() {
     }
 
-    public String GetUser(){
+    public String GetUser() {
         int int_buf;
         String command;
         Scanner sc = new Scanner(System.in);
-        while (true){
+        while (true) {
             System.out.println("1-Вход\n2-Регистрация");
             int_buf = sc.nextInt();
-            switch (int_buf){
-                case 1:{
+            switch (int_buf) {
+                case 1: {
 
                 }
-                case 2:{}
+                case 2: {
+                }
             }
 
         }

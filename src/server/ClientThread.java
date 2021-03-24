@@ -7,7 +7,6 @@ import java.util.Calendar;
 
 public class ClientThread extends Thread implements Serializable {
 
-
     public static int numOfUsers = 0;
 
     private String ch;
@@ -27,7 +26,7 @@ public class ClientThread extends Thread implements Serializable {
 
             ServerInfo info = new ServerInfo();
             Message message;
-            DbConnect dbConnect =new DbConnect();
+            DbConnect dbConnect = new DbConnect();
             ObjectOutputStream outputStream;
             ObjectInputStream inputStream;
             inputStream = new ObjectInputStream(this.socket.getInputStream());
@@ -41,67 +40,74 @@ public class ClientThread extends Thread implements Serializable {
                 switch (ch) {
 
                     case "check": {
-                        if (Integer.parseInt(message.getBuf()) != Chat.getSize()) {
-                            System.out.println("Получено "+message.getCommand()+" "+message.getBuf()+" от "+ info.getUser() + " chatsize был "+Chat.getSize());
+                        if (Integer.parseInt(message.getBuf()) != info.getSize()) {
                             buf = "";
-                            for (int i = Integer.parseInt(message.getBuf()); i < Chat.getSize(); i++) {
-                                buf += Chat.history.get(i);
-                                buf += "%";
+                            for (int i = Integer.parseInt(message.getBuf()); i < info.getSize(); i++) {
+                                buf += info.getMsgById(i);
+                                buf += "&";
+                                buf += info.getUserById(i);
+                                buf += "#";
                             }
                             message.setCommand(buf);
-                            message.setBuf(String.valueOf(Chat.getSize()));
-                            outputStream.writeObject(message);
+                            message.setBuf(String.valueOf(info.getSize()));
 
                         } else {
                             message.setBuf("old");
-                            outputStream.writeObject(message);
                         }
+                        outputStream.writeObject(message);
                         break;
                     }
 
                     case "new": {
-                        Chat.history.add(message.getBuf());
-                        Chat.users.add(info.getUser());
-                        buf=message.getBuf()+"&"+info.getUser()+"&"+Calendar.getInstance().getTime()+"&"+info.getRoom_id();
+                        info.addMsg(message.getBuf());
+                        info.addUser(info.getUser());
+                        buf = message.getBuf() + "&" + info.getUser() + "&" + Calendar.getInstance().getTime() + "&" + info.getRoom_id();
                         System.out.println(buf);
                         dbConnect.query("newMessage", buf);
                         outputStream.writeObject(message);
                         break;
                     }
 
-
-                    case "add user":{
-                        if (dbConnect.query("addUser", message.getBuf()).equals("success")){
+                    case "add user": {
+                        if (dbConnect.query("addUser", message.getBuf()).equals("success")) {
                             message.setCommand("success");
                             info.setUser(message.getBuf().split("&")[0]);
-                            outputStream.writeObject(message);
                         } else {
                             message.setCommand("error");
-                            outputStream.writeObject(message);
                         }
+                        outputStream.writeObject(message);
                         break;
                     }
 
-                    case "check user":{
-                        if (dbConnect.query("checkUser", message.getBuf()).equals("success")){
+                    case "check user": {
+                        if (dbConnect.query("checkUser", message.getBuf()).equals("success")) {
                             message.setCommand("success");
                             info.setUser(message.getBuf().split("&")[0]);
-                            outputStream.writeObject(message);
                         } else {
                             message.setCommand("error");
-                            outputStream.writeObject(message);
                         }
+                        outputStream.writeObject(message);
                         break;
                     }
 
-                    case "get history":{
-                        dbConnect.query("getChat", String.valueOf(info.getRoom_id()));
+                    case "get history": {
+                        buf = dbConnect.query("getChat", String.valueOf(info.getRoom_id()));
+                        if (!buf.isEmpty()) {
+                            String[] splitedChat = buf.split("&");
+                            for (String str : splitedChat) {
+                                info.addMsg(str.split("#")[0]);
+                                info.addUser(str.split("#")[1]);
+                            }
+                            for (int i = 0; i < info.getSize(); i++) {
+                                System.out.println(info.getMsgById(i));
+                            }
+                        }
                         message.setCommand("success");
                         outputStream.writeObject(message);
                         break;
                     }
 
-                    case "set room":{
+                    case "set room": {
                         info.setRoom_id(Integer.parseInt(message.getBuf()));
                         message.setCommand("success");
                         outputStream.writeObject(message);
