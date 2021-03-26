@@ -40,7 +40,20 @@ public class ClientThread extends Thread implements Serializable {
                 switch (ch) {
 
                     case "check": {
-                        if (Integer.parseInt(message.getBuf()) != info.getSize()) {
+                        if (info.getSize() != Integer.parseInt(dbConnect.query("getSize", String.valueOf(info.getRoom_id())))) {
+                            buf = dbConnect.query("getChat", String.valueOf(info.getRoom_id()));
+                            String[] splitedChat = buf.split("&");
+                            for (int i = info.getSize(); i < splitedChat.length; i++) {
+                                info.addMsg(splitedChat[i].split("#")[0]);
+                                info.addUser(splitedChat[i].split("#")[1]);
+                            }
+                            for (int i = 0; i < info.getSize(); i++) {
+                                System.out.println(info.getMsgById(i));
+                            }
+                        }
+
+                        if (info.getSize() != Integer.parseInt(message.getBuf())) {
+
                             buf = "";
                             for (int i = Integer.parseInt(message.getBuf()); i < info.getSize(); i++) {
                                 buf += info.getMsgById(i);
@@ -98,6 +111,7 @@ public class ClientThread extends Thread implements Serializable {
                                 info.addMsg(str.split("#")[0]);
                                 info.addUser(str.split("#")[1]);
                             }
+
                             for (int i = 0; i < info.getSize(); i++) {
                                 System.out.println(info.getMsgById(i));
                             }
@@ -129,12 +143,14 @@ public class ClientThread extends Thread implements Serializable {
 
             }
 
-        } catch (SocketException e) {
+        } catch (
+                SocketException e) {
             System.out.println("Пользователь отсоединился");
             numOfUsers--;
             System.out.println("Дата: " + Calendar.getInstance().getTime());
             System.out.println("Всего пользователей: " + numOfUsers);
-        } catch (EOFException e) {
+        } catch (
+                EOFException e) {
             System.out.println("...");
             e.printStackTrace();
             try {
@@ -143,7 +159,8 @@ public class ClientThread extends Thread implements Serializable {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException |
+                ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

@@ -82,6 +82,17 @@ public class DbConnect {
                     }
                     return chat;
                 }
+                case "getSize": {
+                    String chat = new String();
+                    PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages WHERE room_id=? ");
+                    preparedStatement.setInt(1, Integer.parseInt(info));
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    int buf = 0;
+                    while (resultSet.next()) {
+                        buf++;
+                    }
+                    return String.valueOf(buf);
+                }
             }
 
 
